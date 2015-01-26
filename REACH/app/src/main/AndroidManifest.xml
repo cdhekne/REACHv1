@@ -24,6 +24,10 @@
             android:name=".STOP"
             android:label="@string/title_activity_stop" >
         </activity>
+        <activity
+            android:name=".STIC"
+            android:label="@string/title_activity_stic" >
+        </activity>
     </application>
 
 </manifest>
