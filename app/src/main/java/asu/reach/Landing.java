@@ -249,40 +249,43 @@ public class Landing extends Activity implements View.OnClickListener,DialogInte
         final Context context = this;
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.admin_pwd_pop_up);
+        EditText pwdText = (EditText) dialog.findViewById(R.id.pwd_editText);
         dialog.setTitle("Enter Admin Password");
         okDialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
         cancelDialogButton = (Button) dialog.findViewById(R.id.dialogButtonCancel);
-        okDialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText pwdText = (EditText) findViewById(R.id.pwd_editText);
-                Intent intent = new Intent(Landing.this, Preferences.class);
-                DBHandler db = new DBHandler(getApplicationContext());
-                boolean pwdMatch = db.checkAdminPwd(pwdText.getText().toString());
-                if(pwdMatch)
-                    startActivity(intent);
-                else{
-                    Toast toast = Toast.makeText(getApplicationContext(),"Invalid Password. Please Try Again",Toast.LENGTH_SHORT);
-                    toast.show();
-                }
+        boolean pwdMatch = checkAdminPwd(pwdText.getText().toString());
+        if(pwdMatch) {
+            Intent intent = new Intent(Landing.this, Preferences.class);
+            startActivity(intent);
+        }
+        else{
+            Toast toast = Toast.makeText(getApplicationContext(),"Invalid Password. Please Try Again",Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
 
-                    /*if(pwdText.getText().equals("73224")){
-                        Intent intent = new Intent(Landing.this, Preferences.class);
-                        startActivity(intent);
-                    }
-                    else{
-                        Toast toast = Toast.makeText(getApplicationContext(),"Invalid Password. Please Try Again",Toast.LENGTH_SHORT);
-                        toast.show();
-                    }*/
+    public boolean checkAdminPwd(String pwdByAdmin){
+        try {
+            DBHelper dbHelper = new DBHelper((Context) this);
+            dbHelper.copyDataBase();
+            SQLiteDatabase sqldb = dbHelper.openDataBase();
+            Cursor c = sqldb.rawQuery("select * from admin_SETTINGS where admin_pwd='" + pwdByAdmin +"'", null);
+            c.getString()
+            if (c.moveToNext()) {
+                c.close();
+                sqldb.close();
+                dbHelper.close();
+                return true;
             }
-        });
-        cancelDialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+            c.close();
+            sqldb.close();
+            dbHelper.close();
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override

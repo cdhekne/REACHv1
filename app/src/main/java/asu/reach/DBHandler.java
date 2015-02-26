@@ -32,10 +32,9 @@ public class DBHandler extends SQLiteOpenHelper{
     public boolean checkAdminPwd(String pwdToBeChecked){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery("select * from Administrator where Admin_pwd="+pwdToBeChecked,null);
-        while(c.moveToNext()){
+        if(c.moveToNext()){
             if(c.getString(0).equals(pwdToBeChecked))
                 return true;
-
         }
         return false;
     }

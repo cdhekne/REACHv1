@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,19 +42,6 @@ public class DBHelper extends SQLiteOpenHelper{
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    // MOVE THIS SOMEWHERE ELSE
-
-    public boolean checkAdminPwd(String pwdToBeChecked){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery("select * from Administrator where Admin_pwd="+pwdToBeChecked,null);
-        while(c.moveToNext()){
-            if(c.getString(0).equals(pwdToBeChecked))
-                return true;
-
-        }
-        return false;
     }
 
 
@@ -98,10 +84,11 @@ public class DBHelper extends SQLiteOpenHelper{
 
     }
 
-    public void openDataBase() throws SQLException{
+    public SQLiteDatabase openDataBase() throws SQLException{
         //Open the database
         String myPath = DB_PATH + DB_NAME;
         myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
+        return myDataBase;
     }
 
     @Override
